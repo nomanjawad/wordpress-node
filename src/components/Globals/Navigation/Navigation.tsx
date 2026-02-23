@@ -8,27 +8,32 @@ import { fetchGraphQL } from "@/utils/fetchGraphQL";
 import gql from "graphql-tag";
 
 async function getData() {
-  const menuQuery = gql`
-    query MenuQuery {
-      menuItems(where: { location: PRIMARY_MENU }) {
-        nodes {
-          uri
-          target
-          label
+  try {
+    const menuQuery = gql`
+      query MenuQuery {
+        menuItems(first: 10) {
+          nodes {
+            uri
+            target
+            label
+          }
         }
       }
+    `;
+
+    const { menuItems } = await fetchGraphQL<{
+      menuItems: RootQueryToMenuItemConnection;
+    }>(print(menuQuery));
+
+    if (menuItems === null) {
+      return { nodes: [] };
     }
-  `;
 
-  const { menuItems } = await fetchGraphQL<{
-    menuItems: RootQueryToMenuItemConnection;
-  }>(print(menuQuery));
-
-  if (menuItems === null) {
-    throw new Error("Failed to fetch data");
+    return menuItems;
+  } catch (error) {
+    console.error("Error fetching menu:", error);
+    return { nodes: [] };
   }
-
-  return menuItems;
 }
 
 export default async function Navigation() {
@@ -41,6 +46,18 @@ export default async function Navigation() {
       itemScope
       itemType="http://schema.org/SiteNavigationElement"
     >
+      <Link
+        itemProp="url"
+        href="/blog"
+        style={{
+          marginRight: "1rem",
+          fontWeight: "bold",
+          color: "#0070f3",
+        }}
+      >
+        <span itemProp="name">Blog Archive</span>
+      </Link>
+      
       {menuItems.nodes.map((item: MenuItem, index: number) => {
         if (!item.uri) return null;
 
