@@ -1,4 +1,4 @@
-import { CaseStudyNode } from "./caseStudy.data";
+import { CaseStudyNode } from "@/wordpress/functions/caseStudy";
 
 type Props = {
   item: CaseStudyNode;

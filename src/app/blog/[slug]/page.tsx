@@ -5,7 +5,7 @@ import BlogPostTemplate from "@/components/Templates/BlogPost/BlogPostTemplate";
 import {
   getSingleBlogMetadata,
   getSingleBlogViewModel,
-} from "@/components/Templates/BlogPost/blogPost.data";
+} from "@/wordpress/functions/blogPost";
 
 type Props = {
   params: Promise<{ slug: string }>;

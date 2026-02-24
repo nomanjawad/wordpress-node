@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { print } from "graphql/language/printer";
 
-import { fetchGraphQL } from "@/utils/fetchGraphQL";
-import { SingleBlogQuery } from "@/queries/blog/SingleBlogQuery";
+import { fetchGraphQL } from "@/wordpress/functions/fetchGraphQL";
+import { SingleBlogQuery } from "@/wordpress/queries/blog/SingleBlogQuery";
 
 type SingleBlogResponse = {
   post: any;

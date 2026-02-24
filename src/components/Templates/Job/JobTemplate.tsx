@@ -1,4 +1,4 @@
-import { JobNode } from "./job.data";
+import { JobNode } from "@/wordpress/functions/job";
 import FluentFormBridge from "./FluentFormBridge";
 
 type Props = {
@@ -14,6 +14,7 @@ export default function JobTemplate({
   submitCode,
   submitError,
 }: Props) {
+  const allowFormSubmit = submitStatus !== "success";
   const departments =
     item.terms?.nodes?.filter((term) => term?.__typename === "Depertment") || [];
   const jobTags =
@@ -119,7 +120,10 @@ export default function JobTemplate({
       <div style={{ marginTop: "2rem" }}>
         <h2>Content</h2>
         <div id="job-content-form-root" dangerouslySetInnerHTML={{ __html: item.content || "" }} />
-        <FluentFormBridge containerId="job-content-form-root" />
+        <FluentFormBridge
+          containerId="job-content-form-root"
+          enabled={allowFormSubmit}
+        />
       </div>
 
       <div style={{ marginTop: "2rem" }}>

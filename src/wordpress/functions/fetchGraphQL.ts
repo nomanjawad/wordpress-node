@@ -1,9 +1,9 @@
-import { draftMode, cookies } from "next/headers";
+import { cookies, draftMode } from "next/headers";
 
 export async function fetchGraphQL<T = any>(
   query: string,
   variables?: { [key: string]: any },
-  headers?: { [key: string]: string },
+  headers?: { [key: string]: string }
 ): Promise<T> {
   const { isEnabled: preview } = await draftMode();
 
@@ -39,7 +39,7 @@ export async function fetchGraphQL<T = any>(
         next: {
           tags: ["wordpress"],
         },
-      },
+      }
     );
 
     if (!response.ok) {

@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
 import CaseStudyTemplate from "@/components/Templates/CaseStudy/CaseStudyTemplate";
-import { getSingleCaseStudy } from "@/components/Templates/CaseStudy/caseStudy.data";
+import { getSingleCaseStudy } from "@/wordpress/functions/caseStudy";
 
 type Props = {
   params: Promise<{ slug: string }>;

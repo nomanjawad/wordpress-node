@@ -1,7 +1,7 @@
 import { print } from "graphql/language/printer";
 
-import { fetchGraphQL } from "@/utils/fetchGraphQL";
-import { BlogArchiveQuery } from "@/queries/blog/BlogArchiveQuery";
+import { fetchGraphQL } from "@/wordpress/functions/fetchGraphQL";
+import { BlogArchiveQuery } from "@/wordpress/queries/blog/BlogArchiveQuery";
 
 type PostNode = {
   id: string;

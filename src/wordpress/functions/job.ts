@@ -1,8 +1,8 @@
 import { print } from "graphql/language/printer";
 
-import { fetchGraphQL } from "@/utils/fetchGraphQL";
-import { JobArchiveQuery } from "@/queries/job/JobArchiveQuery";
-import { SingleJobQuery } from "@/queries/job/SingleJobQuery";
+import { fetchGraphQL } from "@/wordpress/functions/fetchGraphQL";
+import { JobArchiveQuery } from "@/wordpress/queries/job/JobArchiveQuery";
+import { SingleJobQuery } from "@/wordpress/queries/job/SingleJobQuery";
 
 export type JobNode = {
   id: string;

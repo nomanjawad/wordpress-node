@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
 import JobTemplate from "@/components/Templates/Job/JobTemplate";
-import { getSingleJob } from "@/components/Templates/Job/job.data";
+import { getSingleJob } from "@/wordpress/functions/job";
 
 type Props = {
   params: Promise<{ slug: string }>;

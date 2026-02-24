@@ -1,8 +1,8 @@
 import { print } from "graphql/language/printer";
 
-import { fetchGraphQL } from "@/utils/fetchGraphQL";
-import { CaseStudyArchiveQuery } from "@/queries/caseStudy/CaseStudyArchiveQuery";
-import { SingleCaseStudyQuery } from "@/queries/caseStudy/SingleCaseStudyQuery";
+import { fetchGraphQL } from "@/wordpress/functions/fetchGraphQL";
+import { CaseStudyArchiveQuery } from "@/wordpress/queries/caseStudy/CaseStudyArchiveQuery";
+import { SingleCaseStudyQuery } from "@/wordpress/queries/caseStudy/SingleCaseStudyQuery";
 
 export type CaseStudyNode = {
   id: string;

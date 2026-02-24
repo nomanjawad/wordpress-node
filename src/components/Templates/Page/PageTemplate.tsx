@@ -1,16 +1,12 @@
-import { print } from "graphql/language/printer";
-import { ContentNode, Page } from "@/gql/graphql";
-import { fetchGraphQL } from "@/utils/fetchGraphQL";
-import { PageQuery } from "./PageQuery";
+import { ContentNode } from "@/gql/graphql";
+import { getPageByDatabaseId } from "@/wordpress/functions/content";
 
 interface TemplateProps {
   node: ContentNode;
 }
 
 export default async function PageTemplate({ node }: TemplateProps) {
-  const { page } = await fetchGraphQL<{ page: Page }>(print(PageQuery), {
-    id: node.databaseId,
-  });
+  const page = await getPageByDatabaseId(node.databaseId);
 
   return <div dangerouslySetInnerHTML={{ __html: page?.content || "" }} />;
 }

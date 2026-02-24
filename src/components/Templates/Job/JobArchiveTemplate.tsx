@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { JobNode } from "./job.data";
+import { JobNode } from "@/wordpress/functions/job";
 
 type Props = {
   items: JobNode[];

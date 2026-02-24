@@ -1,43 +1,12 @@
 import Link from "next/link";
-import { print } from "graphql/language/printer";
 
 import styles from "./Navigation.module.css";
 
-import { MenuItem, RootQueryToMenuItemConnection } from "@/gql/graphql";
-import { fetchGraphQL } from "@/utils/fetchGraphQL";
-import gql from "graphql-tag";
-
-async function getData() {
-  try {
-    const menuQuery = gql`
-      query MenuQuery {
-        menuItems(first: 10) {
-          nodes {
-            uri
-            target
-            label
-          }
-        }
-      }
-    `;
-
-    const { menuItems } = await fetchGraphQL<{
-      menuItems: RootQueryToMenuItemConnection;
-    }>(print(menuQuery));
-
-    if (menuItems === null) {
-      return { nodes: [] };
-    }
-
-    return menuItems;
-  } catch (error) {
-    console.error("Error fetching menu:", error);
-    return { nodes: [] };
-  }
-}
+import { MenuItem } from "@/gql/graphql";
+import { getNavigationMenuItems } from "@/wordpress/functions/navigation";
 
 export default async function Navigation() {
-  const menuItems = await getData();
+  const menuItems = await getNavigationMenuItems();
 
   return (
     <nav

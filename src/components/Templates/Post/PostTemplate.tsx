@@ -1,19 +1,15 @@
-import { print } from "graphql/language/printer";
-
 import { ContentNode, Post } from "@/gql/graphql";
-import { fetchGraphQL } from "@/utils/fetchGraphQL";
+import { getPostByDatabaseId } from "@/wordpress/functions/content";
 
 import styles from "./PostTemplate.module.css";
-import { PostQuery } from "./PostQuery";
 
 interface TemplateProps {
   node: ContentNode;
 }
 
 export default async function PostTemplate({ node }: TemplateProps) {
-  const { post } = await fetchGraphQL<{ post: Post }>(print(PostQuery), {
-    id: node.databaseId,
-  });
+  const post = (await getPostByDatabaseId(node.databaseId)) as Post | null;
+  if (!post) return null;
 
   return (
     <div className={styles.post}>

@@ -5,6 +5,7 @@ import { useEffect } from "react";
 type Props = {
   containerId: string;
   endpoint?: string;
+  enabled?: boolean;
 };
 
 const extractFormId = (form: HTMLFormElement) => {
@@ -20,15 +21,28 @@ const extractFormId = (form: HTMLFormElement) => {
 export default function FluentFormBridge({
   containerId,
   endpoint = "/api/forms/fluent-submit",
+  enabled = true,
 }: Props) {
   useEffect(() => {
     const container = document.getElementById(containerId);
     if (!container) return;
 
     const forms = Array.from(container.querySelectorAll("form"));
+    const cleanups: Array<() => void> = [];
 
     forms.forEach((formEl) => {
       const form = formEl as HTMLFormElement;
+
+      if (!enabled) {
+        const handleDisabledSubmit = (event: Event) => {
+          event.preventDefault();
+        };
+
+        form.addEventListener("submit", handleDisabledSubmit);
+        cleanups.push(() => form.removeEventListener("submit", handleDisabledSubmit));
+        return;
+      }
+
       form.method = "POST";
       form.action = endpoint;
       form.enctype = "multipart/form-data";
@@ -42,7 +56,11 @@ export default function FluentFormBridge({
         form.appendChild(hidden);
       }
     });
-  }, [containerId, endpoint]);
+
+    return () => {
+      cleanups.forEach((cleanup) => cleanup());
+    };
+  }, [containerId, endpoint, enabled]);
 
   return null;
 }

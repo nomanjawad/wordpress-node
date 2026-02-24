@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import JobArchiveTemplate from "@/components/Templates/Job/JobArchiveTemplate";
-import { getJobArchiveItems } from "@/components/Templates/Job/job.data";
+import { getJobArchiveItems } from "@/wordpress/functions/job";
 
 export const metadata: Metadata = {
   title: "Job Archive",

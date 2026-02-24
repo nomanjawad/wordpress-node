@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import BlogArchiveTemplate from "@/components/Templates/BlogArchive/BlogArchiveTemplate";
-import { getBlogArchivePosts } from "@/components/Templates/BlogArchive/blogArchive.data";
+import { getBlogArchivePosts } from "@/wordpress/functions/blogArchive";
 
 export const metadata: Metadata = {
   title: "Blog Archive",

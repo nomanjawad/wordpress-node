@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { CaseStudyNode } from "./caseStudy.data";
+import { CaseStudyNode } from "@/wordpress/functions/caseStudy";
 
 type Props = {
   items: CaseStudyNode[];
