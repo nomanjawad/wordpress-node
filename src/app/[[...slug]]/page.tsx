@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
+import { print } from "graphql/language/printer";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 
 import PageTemplate from "@/components/Templates/Page/PageTemplate";
 import PostTemplate from "@/components/Templates/Post/PostTemplate";
-import { getContentInfoBySlug } from "@/wordpress/functions/content";
+import { ContentNode } from "@/gql/graphql";
+import { fetchGraphQL } from "@/wordpress/functions/fetchGraphQL";
 import { nextSlugToWpSlug } from "@/wordpress/functions/slug";
+import { ContentInfoQuery } from "@/wordpress/queries/general/ContentInfoQuery";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -65,7 +68,13 @@ export default async function Page({ params }: Props) {
   }
 
   const isPreview = slug.includes("preview");
-  const contentNode = await getContentInfoBySlug({ slug, isPreview });
+  const { contentNode } = await fetchGraphQL<{ contentNode: ContentNode | null }>(
+    print(ContentInfoQuery),
+    {
+      slug: isPreview ? slug.split("preview/")[1] : slug,
+      idType: isPreview ? "DATABASE_ID" : "URI",
+    }
+  );
 
   if (!contentNode) return notFound();
 

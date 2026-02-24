@@ -1,5 +1,27 @@
+import { print } from "graphql/language/printer";
+import gql from "graphql-tag";
+
 import { ContentNode, Post } from "@/gql/graphql";
-import { getPostByDatabaseId } from "@/wordpress/functions/content";
+import { fetchGraphQL } from "@/wordpress/functions/fetchGraphQL";
+
+const POST_QUERY = gql`
+  query PostQuery($id: ID!, $preview: Boolean = false) {
+    post(id: $id, idType: DATABASE_ID, asPreview: $preview) {
+      id
+      databaseId
+      title
+      content
+      slug
+      status
+      uri
+      author {
+        node {
+          name
+        }
+      }
+    }
+  }
+`;
 
 import styles from "./PostTemplate.module.css";
 
@@ -8,7 +30,9 @@ interface TemplateProps {
 }
 
 export default async function PostTemplate({ node }: TemplateProps) {
-  const post = (await getPostByDatabaseId(node.databaseId)) as Post | null;
+  const { post } = await fetchGraphQL<{ post: Post | null }>(print(POST_QUERY), {
+    id: node.databaseId,
+  });
   if (!post) return null;
 
   return (

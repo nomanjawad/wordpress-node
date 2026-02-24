@@ -17,9 +17,15 @@ src/wordpress/
 - `caseStudy/`
 - `job/`
 - `general/`
-- `navigation/`
-- `preview/`
-- `templates/`
+
+Note:
+- `navigation`, `preview`, and `templates` query folders were removed.
+- Their GraphQL docs are now inlined in the consuming files:
+  - `src/components/Globals/Navigation/Navigation.tsx`
+  - `src/app/api/preview/route.ts`
+  - `src/components/Templates/Page/PageTemplate.tsx`
+  - `src/components/Templates/Post/PostTemplate.tsx`
+  - `src/app/not-found.tsx`
 
 ## Functions
 `src/wordpress/functions` contains query callers and mapping logic:
@@ -27,11 +33,10 @@ src/wordpress/
 - `blogPost.ts`
 - `caseStudy.ts`
 - `job.ts`
-- `content.ts`
-- `navigation.ts`
-- `preview.ts`
+- `fetchGraphQL.ts`
+- `slug.ts`
 
-These are now consumed by app routes/templates (instead of local `*.data.ts` files inside template folders).
+These are consumed by app routes/templates. Query docs remain in `src/wordpress/queries`.
 
 ## Environment Variables
 Required for production:

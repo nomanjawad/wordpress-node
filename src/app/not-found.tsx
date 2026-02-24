@@ -1,6 +1,23 @@
 import type { Metadata } from "next";
+import { print } from "graphql/language/printer";
+import gql from "graphql-tag";
 
-import { getPageByDatabaseId } from "@/wordpress/functions/content";
+import { Page } from "@/gql/graphql";
+import { fetchGraphQL } from "@/wordpress/functions/fetchGraphQL";
+
+const PAGE_QUERY = gql`
+  query PageQuery($id: ID!, $preview: Boolean = false) {
+    page(id: $id, idType: DATABASE_ID, asPreview: $preview) {
+      id
+      databaseId
+      title
+      content
+      slug
+      status
+      uri
+    }
+  }
+`;
 
 const notFoundPageWordPressId = 501;
 
@@ -14,7 +31,9 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function NotFound() {
-  const page = await getPageByDatabaseId(notFoundPageWordPressId);
+  const { page } = await fetchGraphQL<{ page: Page | null }>(print(PAGE_QUERY), {
+    id: notFoundPageWordPressId,
+  });
   if (!page) {
     return <div>Page not found</div>;
   }
