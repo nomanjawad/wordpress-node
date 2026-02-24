@@ -1,4 +1,5 @@
 import { JobNode } from "./job.data";
+import FluentFormBridge from "./FluentFormBridge";
 
 type Props = {
   item: JobNode;
@@ -68,7 +69,8 @@ export default function JobTemplate({ item }: Props) {
 
       <div style={{ marginTop: "2rem" }}>
         <h2>Content</h2>
-        <div dangerouslySetInnerHTML={{ __html: item.content || "" }} />
+        <div id="job-content-form-root" dangerouslySetInnerHTML={{ __html: item.content || "" }} />
+        <FluentFormBridge containerId="job-content-form-root" />
       </div>
 
       <div style={{ marginTop: "2rem" }}>
