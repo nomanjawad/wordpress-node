@@ -18,15 +18,6 @@ src/wordpress/
 - `job/`
 - `general/`
 
-Note:
-- `navigation`, `preview`, and `templates` query folders were removed.
-- Their GraphQL docs are now inlined in the consuming files:
-  - `src/components/Globals/Navigation/Navigation.tsx`
-  - `src/app/api/preview/route.ts`
-  - `src/components/Templates/Page/PageTemplate.tsx`
-  - `src/components/Templates/Post/PostTemplate.tsx`
-  - `src/app/not-found.tsx`
-
 ## Functions
 `src/wordpress/functions` contains query callers and mapping logic:
 - `blogArchive.ts`
@@ -37,6 +28,154 @@ Note:
 - `slug.ts`
 
 These are consumed by app routes/templates. Query docs remain in `src/wordpress/queries`.
+
+### Function Usage
+- `fetchGraphQL.ts`
+  - `fetchGraphQL<T>(query, variables?, headers?)`
+  - Core WordPress GraphQL requester.
+  - Adds preview JWT automatically from `wp_jwt` cookie when draft mode is enabled.
+  - Used by all other WordPress data functions and several app routes/components.
+  - Call example:
+```ts
+import { print } from "graphql/language/printer";
+import { fetchGraphQL } from "@/wordpress/functions/fetchGraphQL";
+import { BlogArchiveQuery } from "@/wordpress/queries/blog/BlogArchiveQuery";
+
+const data = await fetchGraphQL<{ posts: { nodes: any[] } }>(print(BlogArchiveQuery));
+```
+  - Return preview:
+```json
+{
+  "posts": {
+    "nodes": [{ "id": "cG9zdDox", "title": "Post title", "slug": "post-slug" }]
+  }
+}
+```
+
+- `slug.ts`
+  - `nextSlugToWpSlug(nextSlug: string): string`
+  - Converts dynamic Next slug to WordPress-style URI (`/path/`).
+  - Used in `src/app/[[...slug]]/page.tsx`.
+  - Call example:
+```ts
+import { nextSlugToWpSlug } from "@/wordpress/functions/slug";
+
+const wpSlug = nextSlugToWpSlug("job/web-developer");
+// "/job/web-developer/"
+```
+  - Return preview:
+```json
+"/job/web-developer/"
+```
+
+- `blogArchive.ts`
+  - `getBlogArchivePosts(): Promise<PostNode[]>`
+  - Fetches blog archive listing.
+  - Used in `src/app/blog/page.tsx`.
+  - Call example:
+```ts
+import { getBlogArchivePosts } from "@/wordpress/functions/blogArchive";
+
+const posts = await getBlogArchivePosts();
+```
+  - Return preview:
+```json
+[
+  {
+    "id": "cG9zdDox",
+    "databaseId": 1,
+    "title": "Post title",
+    "slug": "post-slug"
+  }
+]
+```
+
+- `blogPost.ts`
+  - `fetchSingleBlogPost(slug)`
+  - `buildSingleBlogViewModel(post)`
+  - `getSingleBlogViewModel(slug)`
+  - `getSingleBlogMetadata(slug)`
+  - Handles single blog fetching, SEO domain rewriting, head meta extraction, and JSON-LD prettification.
+  - Used in `src/app/blog/[slug]/page.tsx`.
+  - Call example:
+```ts
+import {
+  getSingleBlogViewModel,
+  getSingleBlogMetadata
+} from "@/wordpress/functions/blogPost";
+
+const viewModel = await getSingleBlogViewModel("top-software-companies-in-bd");
+const metadata = await getSingleBlogMetadata("top-software-companies-in-bd");
+```
+  - Return preview (`getSingleBlogViewModel`):
+```json
+{
+  "post": { "id": "cG9zdDox", "title": "Post title", "content": "<p>...</p>" },
+  "rewrittenSeo": { "canonicalUrl": "https://your-base-url.com/post-slug/" },
+  "headMeta": { "description": "SEO description", "og:title": "Post title" },
+  "formattedJsonLd": "{\n  \"@context\": \"https://schema.org\",\n  ...\n}"
+}
+```
+
+- `caseStudy.ts`
+  - `getCaseStudyArchiveItems(): Promise<CaseStudyNode[]>`
+  - `getSingleCaseStudy(slug): Promise<CaseStudyNode | null>`
+  - Fetches case study archive + single item.
+  - Used in:
+    - `src/app/case-study/page.tsx`
+    - `src/app/case-study/[slug]/page.tsx`
+  - Call example:
+```ts
+import {
+  getCaseStudyArchiveItems,
+  getSingleCaseStudy
+} from "@/wordpress/functions/caseStudy";
+
+const items = await getCaseStudyArchiveItems();
+const one = await getSingleCaseStudy("my-case-study");
+```
+  - Return preview (`getSingleCaseStudy`):
+```json
+{
+  "id": "cG9zdDoz",
+  "databaseId": 3,
+  "title": "Case Study title",
+  "slug": "my-case-study",
+  "categories": { "nodes": [{ "name": "Category A" }] },
+  "featuredImage": { "node": { "sourceUrl": "https://..." } }
+}
+```
+
+- `job.ts`
+  - `getJobArchiveItems(): Promise<JobNode[]>`
+  - `getSingleJob(slug): Promise<JobNode | null>`
+  - Fetches job archive + single item (including featured image, terms, and ACF `jobsinfo.deadline`).
+  - Used in:
+    - `src/app/job/page.tsx`
+    - `src/app/job/[slug]/page.tsx`
+  - Call example:
+```ts
+import { getJobArchiveItems, getSingleJob } from "@/wordpress/functions/job";
+
+const jobs = await getJobArchiveItems();
+const job = await getSingleJob("web-developer");
+```
+  - Return preview (`getSingleJob`):
+```json
+{
+  "id": "cG9zdDo4",
+  "databaseId": 8,
+  "title": "Web Developer",
+  "slug": "web-developer",
+  "jobsinfo": { "deadline": "2026-03-15" },
+  "terms": {
+    "nodes": [
+      { "__typename": "Depertment", "name": "Engineering" },
+      { "__typename": "JobTag", "name": "Full-time" }
+    ]
+  }
+}
+```
 
 ## Environment Variables
 Required for production:
