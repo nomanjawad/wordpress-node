@@ -5,10 +5,16 @@ import { getSingleJob } from "@/components/Templates/Job/job.data";
 
 type Props = {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{
+    ff_submit?: string;
+    ff_code?: string;
+    ff_error?: string;
+  }>;
 };
 
-export default async function SingleJobPage({ params }: Props) {
+export default async function SingleJobPage({ params, searchParams }: Props) {
   const { slug } = await params;
+  const query = await searchParams;
 
   try {
     const item = await getSingleJob(slug);
@@ -17,7 +23,14 @@ export default async function SingleJobPage({ params }: Props) {
       return notFound();
     }
 
-    return <JobTemplate item={item} />;
+    return (
+      <JobTemplate
+        item={item}
+        submitStatus={query.ff_submit}
+        submitCode={query.ff_code}
+        submitError={query.ff_error}
+      />
+    );
   } catch (error) {
     console.error("Error fetching job:", error);
 

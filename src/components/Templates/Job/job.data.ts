@@ -9,6 +9,9 @@ export type JobNode = {
   databaseId: number;
   title?: string | null;
   content?: string | null;
+  jobsinfo?: {
+    deadline?: string | null;
+  } | null;
   slug?: string | null;
   date?: string | null;
   modified?: string | null;

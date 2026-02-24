@@ -7,6 +7,9 @@ export const SingleJobQuery = gql`
       databaseId
       title
       content
+      jobsinfo {
+        deadline
+      }
       slug
       date
       modified

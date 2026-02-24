@@ -3,9 +3,17 @@ import FluentFormBridge from "./FluentFormBridge";
 
 type Props = {
   item: JobNode;
+  submitStatus?: string;
+  submitCode?: string;
+  submitError?: string;
 };
 
-export default function JobTemplate({ item }: Props) {
+export default function JobTemplate({
+  item,
+  submitStatus,
+  submitCode,
+  submitError,
+}: Props) {
   const departments =
     item.terms?.nodes?.filter((term) => term?.__typename === "Depertment") || [];
   const jobTags =
@@ -14,6 +22,42 @@ export default function JobTemplate({ item }: Props) {
   return (
     <div style={{ padding: "2rem", fontFamily: "monospace" }}>
       <h1>{item.title}</h1>
+
+      {submitStatus === "success" ? (
+        <div
+          style={{
+            marginTop: "1rem",
+            padding: "0.75rem 1rem",
+            border: "1px solid #2d7a2d",
+            background: "#e8f6e8",
+            color: "#1f5c1f",
+          }}
+        >
+          Form submitted successfully.
+        </div>
+      ) : null}
+
+      {submitStatus === "error" ? (
+        <div
+          style={{
+            marginTop: "1rem",
+            padding: "0.75rem 1rem",
+            border: "1px solid #b94a48",
+            background: "#fdecea",
+            color: "#7f1d1d",
+          }}
+        >
+          <p>
+            <strong>Submission failed</strong>
+            {submitCode ? ` (HTTP ${submitCode})` : ""}.
+          </p>
+          {submitError ? (
+            <p style={{ marginTop: "0.35rem" }}>
+              <strong>Details:</strong> {submitError}
+            </p>
+          ) : null}
+        </div>
+      ) : null}
 
       <div
         style={{
@@ -33,6 +77,11 @@ export default function JobTemplate({ item }: Props) {
         <p>
           <strong>Published Date:</strong> {item.date}
         </p>
+        {item.jobsinfo?.deadline ? (
+          <p>
+            <strong>Deadline:</strong> {item.jobsinfo.deadline}
+          </p>
+        ) : null}
         <p>
           <strong>Last Modified:</strong> {item.modified}
         </p>
