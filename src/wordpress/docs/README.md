@@ -25,9 +25,14 @@ src/wordpress/
 - `caseStudy.ts`
 - `job.ts`
 - `fetchGraphQL.ts`
+- `fluentSubmit.ts`
 - `slug.ts`
 
 These are consumed by app routes/templates. Query docs remain in `src/wordpress/queries`.
+
+## Extra Docs
+- Fluent Forms handler details:
+  - `src/wordpress/docs/FLUENT_FORMS.md`
 
 ### Function Usage
 - `fetchGraphQL.ts`
